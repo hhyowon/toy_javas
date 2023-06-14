@@ -33,7 +33,10 @@ public class PollsWithDB {
             while(!workkey.equals("E")){ //'E'가 아닐때까지 무한루프 
                 System.out.println("------ 작동 key ------\n(E)xit :  종료 \n(P)oll : 설문조사\n(S)tatistic : 통계");
                 System.out.print("선택입력 : ");
-                 workkey = scanner.nextLine(); // 키 입력 scanner 
+                workkey = scanner.nextLine(); // 키 입력 scanner 
+                String usernameId = "";
+                HashMap< String, String> userNameMap = new HashMap<>();// 설문자 번호를 저장할 해시맵 생성 
+                String memNum = "";
 
                  /* 'O'입력시 차 이름명단 나오는 옵션 */
                  if(workkey.equals("P")){ 
@@ -43,23 +46,22 @@ public class PollsWithDB {
                                 "FROM pollswithdb.user";
                     ResultSet resultSet = statement.executeQuery(query); //statemane 객체를 사용해서 select문 실행하고 결과 resultset에 저장함 
                     int number = 1; //번호를 나타내는 변수 
-                    HashMap< String, String> userNameMap = new HashMap<>();// 설문자 번호를 저장할 해시맵 생성 
-
+                    
                     while (resultSet.next()) { //resultSet 값 있을 때까지 반복 루프 
                         System.out.println(number + "." +
-                            resultSet.getString("USER_NAME"));                                
-                            number = number + 1;
-                        String usernameId = resultSet.getString("USER_NAME_ID"); //재활용위해 변수에 치환시킴
+                        resultSet.getString("USER_NAME"));                                
+                        number = number + 1;
+                        usernameId = resultSet.getString("USER_NAME_ID"); //재활용위해 변수에 치환시킴
                         userNameMap.put(String.valueOf(number), usernameId);
-                    }            System.out.println();
-
+                    }            
+                    System.out.println();
 
 
                     boolean validInput = false; //유효한 입력 여부 변수  
 
                     while (!validInput) { // 똑바로 입력 할때까지 반복 
                     System.out.print("설문자 번호 입력 : ");
-                    String memNum = scanner.nextLine(); //해당 설문자 번호 입력
+                    memNum = scanner.nextLine(); //해당 설문자 번호 입력
                         if(Integer.parseInt(memNum)  > 4) //최대 4명이니깐 4 이상 숫자 입력시 Error 메시지 출력
                         {
                             System.out.println("-Error- 확인 후 입력 필요 ");
@@ -71,7 +73,8 @@ public class PollsWithDB {
                 }
 
                 Statement statement2 = connection.createStatement(); //두번째 쿼리 실행위해 생성
-                ResultSet resultSet2; //두번째 쿼리 결과 저장위해 변수 선언 
+                ResultSet resultSet2; //두번째 쿼리 결과 저장위해 변수 선언 \
+
                 String query2; // 두번째 쿼리 저장위한 문자열 변수 선언 
                 String answerNumber; //답항 번호 입력받을 변수 
                 HashMap<String, String> answerNumMap = new HashMap<>(); //입력받은 답항 번호를 저장하기 위한 해시맵 생성 
@@ -93,19 +96,40 @@ public class PollsWithDB {
                             System.out.println();
                             System.out.print("답) ");
 
-                            answerNumber = scanner.nextLine(); // 답항번호 입력        
+                            answerNumber = scanner.nextLine(); // 답항번호 입력   
+                            answerNumMap.put(resultSet.getString("QUESTION_ID"), answerNumber);     
                             //answerNumMap.put(answerNumber,resultSet.getString("ANSWER_ID")); //< --- 여기 잘 모르겠음 마음대로 넣음 일단...  여기넣으면안됨
 
-                            System.out.println();
+                            System.out.println(answerNumMap);
 
                     }
-                    System.out.println();
+                    System.out.println(userNameMap);
+                    System.out.println(userNameMap.get(memNum));
+
                 
-           
+                    query ="DELETE FROM `statistics`\n" + 
+                            "WHERE USER_NAME_ID = '"+userNameMap.get(memNum)+"'";
+
+                    int count = statement.executeUpdate(query); //삭제쿼리 실행하고 영향받는 수 저장
+                    System.out.println(count);
+
+                    //insert 옵션
+                    System.out.println(answerNumMap.keySet());
+                    String questionId = "";
+                    query = "INSERT INTO `statistics`\n" + //
+                            "(QUESTION_ID, ANSWER_ID, USER_NAME_ID)\n" + //
+                            "value\n" + //
+                            "('"+answerNumMap.get("QUESTION_ID")+"', '"+answerNumMap.get("QUESTION_ID")+"', '"+userNameMap.get(memNum)+"')\n" + //
+                            ";\n" + //
+                            "";
+                    count = statement.executeUpdate(query);
+
                     /* S입력시 : 통계시작*/
                  } else if (workkey.equals("S")) {
                         System.out.println(" - 통계 시작 -");
-                        System.out.println(" -- 총 설문자 : ");
+                        System.out.println(" -- 총 설문자  ");
+                        query="";           
+
                         System.out.println(" -- 문항 내에서 최대 갯수 번호");
                         query = "\r\n" + //
                                 "SELECT t1.Question, t1.Answer\r\n" + //
@@ -131,6 +155,7 @@ public class PollsWithDB {
                                             while (resultSet.next()) {
                                                 System.out.println(resultSet.getString("Question") + "-->  " + resultSet.getString("Answer"));
                                             }
+                                               System.out.println();
                                 } catch (Exception e) {
                                     System.out.println("Error occurred while executing the query: " + e.getMessage());
                                     // TODO: handle exception
@@ -149,6 +174,7 @@ public class PollsWithDB {
                                 while (resultSet.next()) {
                                     System.out.println(resultSet.getString("ANSWER") + "-->  " + resultSet.getString("CNT"));
                                 }
+                                   System.out.println();
                             } catch (SQLException e) {
                                 System.out.println("Error occurred while executing the query: " + e.getMessage());
                             }
