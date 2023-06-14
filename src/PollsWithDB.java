@@ -95,7 +95,7 @@ public class PollsWithDB {
 
                             answerNumber = scanner.nextLine(); // 답항번호 입력        
                             //answerNumMap.put(answerNumber,resultSet.getString("ANSWER_ID")); //< --- 여기 잘 모르겠음 마음대로 넣음 일단...  여기넣으면안됨
-                            
+
                             System.out.println();
 
                     }
@@ -106,6 +106,36 @@ public class PollsWithDB {
                  } else if (workkey.equals("S")) {
                         System.out.println(" - 통계 시작 -");
                         System.out.println(" -- 총 설문자 : ");
+                        System.out.println(" -- 문항 내에서 최대 갯수 번호");
+                        query = "\r\n" + //
+                                "SELECT t1.Question, t1.Answer\r\n" + //
+                                "FROM (\r\n" + //
+                                "    SELECT QUE.QUESTION AS 'Question', ANS.ANSWER AS 'Answer', COUNT(*) AS 'Count'\r\n" + //
+                                "    FROM statistics AS STT\r\n" + //
+                                "    INNER JOIN question AS QUE ON STT.QUESTION_ID = QUE.QUESTION_ID\r\n" + //
+                                "    INNER JOIN answer AS ANS ON STT.ANSWER_ID = ANS.ANSWER_ID\r\n" + //
+                                "    GROUP BY QUE.QUESTION, ANS.ANSWER\r\n" + //
+                                ") AS t1\r\n" + //
+                                "WHERE t1.Count = (\r\n" + //
+                                "    SELECT MAX(t2.Count)\r\n" + //
+                                "    FROM (\r\n" + //
+                                "        SELECT QUE.QUESTION AS 'Question', ANS.ANSWER AS 'Answer', COUNT(*) AS 'Count'\r\n" + //
+                                "        FROM statistics AS STT\r\n" + //
+                                "        INNER JOIN question AS QUE ON STT.QUESTION_ID = QUE.QUESTION_ID\r\n" + //
+                                "        INNER JOIN answer AS ANS ON STT.ANSWER_ID = ANS.ANSWER_ID\r\n" + //
+                                "        GROUP BY QUE.QUESTION, ANS.ANSWER\r\n" + //
+                                "    ) AS t2\r\n" + //
+                                ")";
+                                try {
+                                    ResultSet resultSet = statement.executeQuery(query);
+                                            while (resultSet.next()) {
+                                                System.out.println(resultSet.getString("Question") + "-->  " + resultSet.getString("Answer"));
+                                            }
+                                } catch (Exception e) {
+                                    System.out.println("Error occurred while executing the query: " + e.getMessage());
+                                    // TODO: handle exception
+                                }
+                      
 
                         System.out.println(" -- 답항 중심 ");
                         query = "SELECT ANS.ANSWER,STT.ANSWER_ID, COUNT(*) AS CNT\n" + //
@@ -114,7 +144,7 @@ public class PollsWithDB {
                                 "GROUP BY ANS.ANSWER_ID";
                        
                             try {
-                                ResultSet resultSet = statement.executeQuery(query);
+                                 ResultSet resultSet = statement.executeQuery(query);
 
                                 while (resultSet.next()) {
                                     System.out.println(resultSet.getString("ANSWER") + "-->  " + resultSet.getString("CNT"));
