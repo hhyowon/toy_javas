@@ -1,6 +1,7 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -15,7 +16,7 @@ public class PollsWithDB {
         try {
             // - MySQL workbench 실행 : JDBC
             // - User/password와 접속 IP:port 접속
-            String url = "jdbc:mysql://127.0.0.1:3306/db_cars";
+            String url = "jdbc:mysql://127.0.0.1:3306/pollswithdb";
             String user = "root";
             String password = "!yojulab*";
 
@@ -38,16 +39,18 @@ public class PollsWithDB {
                  if(workkey.equals("P")){ 
                     System.out.println("- 설문자 가능 명단(가입 완료)");
            
-                    query ="SELECT USER_NAME\n" + //
+                    query ="SELECT USER_NAME,USER_NAME_ID\n" + //
                                 "FROM pollswithdb.user";
                     ResultSet resultSet = statement.executeQuery(query); //statemane 객체를 사용해서 select문 실행하고 결과 resultset에 저장함 
                     int number = 1; //번호를 나타내는 변수 
-                    HashMap< String, String> userNameMap = new HashMap<>();
+                    HashMap< String, String> userNameMap = new HashMap<>();// 설문자 번호를 저장할 해시맵 생성 
 
                     while (resultSet.next()) { //resultSet 값 있을 때까지 반복 루프 
                         System.out.println(number + "." +
                             resultSet.getString("USER_NAME"));                                
                             number = number + 1;
+                        String usernameId = resultSet.getString("USER_NAME_ID"); //재활용위해 변수에 치환시킴
+                        userNameMap.put(String.valueOf(number), usernameId);
                     }            System.out.println();
 
 
@@ -80,85 +83,47 @@ public class PollsWithDB {
                     while(resultSet.next()) { 
                      System.out.println(resultSet.getString("QUESTION")); // 문제 하나씩 출력
 
-                    query2 ="SELECT ANSWER\n" + //
-                            "FROM pollswithdb.answer;\n"; //답항 출력하는 쿼리
-                        resultSet2 = statement2.executeQuery(query2);
-                        while(resultSet2.next()){
-                            System.out.print(resultSet2.getString("ANSWER")+"  ");
-                            
-                        }
+                        query2 ="SELECT ANSWER, ANSWER_ID\n" + //
+                                "FROM pollswithdb.answer;\n"; //답항 출력하는 쿼리
+                            resultSet2 = statement2.executeQuery(query2);
+                            while(resultSet2.next()){
+                                System.out.print(resultSet2.getString("ANSWER")+"  ");
+                                
+                            }
                             System.out.println();
                             System.out.print("답) ");
-                            answerNumber = scanner.nextLine(); // 답항번호 입력 
+
+                            answerNumber = scanner.nextLine(); // 답항번호 입력        
+                            //answerNumMap.put(answerNumber,resultSet.getString("ANSWER_ID")); //< --- 여기 잘 모르겠음 마음대로 넣음 일단...  여기넣으면안됨
+                            
                             System.out.println();
 
                     }
                     System.out.println();
                 
-                    //String answerPK = answerNumMap.get(answerNumber);
-
-                // 답고른 정보 저장 HashMap<String, String> carOptionInfor = new HashMap<>(); //옵션정보를 저장하기 위한 해시맵 생성
-
-                //     System.out.println("- 선택 가능 옵션들");
-                //     query = "SELECT OPTION_INFOR_ID, OPTION_NAME\r\n" + //
-                //             "FROM option_infors ";
-                //     resultSet = statement.executeQuery(query); //옵션 select 쿼리 결과값 저장 
-                //     number = 1; //옵션번호 나타내는 변수 
-
-                //     HashMap<String, String> carOptionInfor = new HashMap<>(); //옵션정보를 저장하기 위한 해시맵 생성 
-                //     while(resultSet.next()) { 
-                //         System.out.print(number +"."+resultSet.getString("OPTION_NAME")+", "); // 1.옵션1, 2.옵션2 ... 이렇게 나오게 출력
-                //         carOptionInfor.put(String.valueOf(number), resultSet.getString("OPTION_INFOR_ID")); //해시맵에 옵션번호, 옵션 정보ID  저장 
-                //         number = number + 1;    // String.valueOf : int형인 number 변수 문자열로 변환함 
-                //     }
-                //     System.out.println();
-
-                //     System.out.print(" - 추가 옵션 선택 : ");
-                //     String optionNumber = scanner.nextLine(); //옵션번호 입력 
-                //     System.out.println(carNumberMap.get(CarNumber)+", "+carOptionInfor.get(optionNumber));// <해쉬맵에서 가져옴> 선택한 자동차의 이름, 선택한 옵션 정보 출력
-                        
-                //     String carPk = carNumberMap.get(CarNumber);
-                //     String optionPk = carOptionInfor.get(optionNumber);
-
-                //     //delete 옵션
-                //     query ="DELETE FROM `OPTIONS`\n" + //
-                //             "WHERE CAR_INFOR_ID = '"+carPk+"' AND OPTION_INFOR_ID = '"+optionPk+"'";
-                //     int count = statement.executeUpdate(query); //삭제쿼리 실행하고 영향받는 수 저장
-
-                //     //insert 옵션
-                //     Commons commons = new Commons(); //Commons 클래스의 인스턴스 생성
-                //     String optionId = commons.generateUUID(); //랜덤유니크아이디 값 생성에 optionId에 선언해줌 
-         
-                //     query = "INSERT INTO `OPTIONS`\n" + //
-                //             "(OPTION_ID, CAR_INFOR_ID, OPTION_INFOR_ID)\n" + //
-                //             "value\n" + //
-                //             "('"+optionId+"', '"+carPk+"', '"+optionPk+"')\n" + //
-                //             ";\n" + //
-                //             "";
-                //     count = statement.executeUpdate(query);
-
-
+           
                     /* S입력시 : 통계시작*/
-                 } else if(workkey.equals("S")){
-                         System.out.println(" - 통계 시작 -");
-                         System.out.println(" -- 총 설문자 3명");
-                    //      query ="SELECT T_FAC.COMPANY, T_CAR_INFOR.CAR_NAME ,COUNT(*) AS CNT\n" + //
-                    // "FROM (factorys AS T_FAC\n" + //
-                    // "   inner JOIN car_infors AS T_CAR_INFOR\n" + //
-                    // "    ON T_FAC.COMPANY_ID = T_CAR_INFOR.COMPANY_ID)\n" + //
-                    // "    inner join `options` AS T_OPTS\n" + //
-                    // "    ON T_CAR_INFOR.CAR_INFOR_ID = T_OPTS.CAR_INFOR_ID\n" + //
-                    // "GROUP BY T_FAC.COMPANY,  T_CAR_INFOR.CAR_INFOR_ID";
+                 } else if (workkey.equals("S")) {
+                        System.out.println(" - 통계 시작 -");
+                        System.out.println(" -- 총 설문자 : ");
 
-                    // ResultSet resultSet = statement.executeQuery(query);
-                    // while (resultSet.next()) {
-                    //     System.out.println( 
-                    //         resultSet.getString("COMPANY") + "-"+ 
-                    //         resultSet.getString("CAR_NAME")+","+ resultSet.getString("CNT"));
-                    // }
-                
-                 
-                 } else{
+                        System.out.println(" -- 답항 중심 ");
+                        query = "SELECT ANS.ANSWER,STT.ANSWER_ID, COUNT(*) AS CNT\n" + //
+                                "FROM pollswithdb.statistics as STT\n" + //
+                                "INNER JOIN answer as ANS on STT.ANSWER_ID = ANS.ANSWER_ID\n" + //
+                                "GROUP BY ANS.ANSWER_ID";
+                       
+                            try {
+                                ResultSet resultSet = statement.executeQuery(query);
+
+                                while (resultSet.next()) {
+                                    System.out.println(resultSet.getString("ANSWER") + "-->  " + resultSet.getString("CNT"));
+                                }
+                            } catch (SQLException e) {
+                                System.out.println("Error occurred while executing the query: " + e.getMessage());
+                            }
+                        
+                    }else{
                         System.out.println(" ----- 작업 키 확인 ----"+workkey);
                  }
 
