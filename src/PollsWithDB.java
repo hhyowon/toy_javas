@@ -37,7 +37,13 @@ public class PollsWithDB {
                  /* 'O'입력시 차 이름명단 나오는 옵션 */
                  if(workkey.equals("P")){ 
                     System.out.println("- 설문자 가능 명단(가입 완료)");
-                    //..쿼리로 명단 가져오기 
+                     // 예삔커벨이 할일 설문자 가능 명단 sql에서 가져오기
+                     // 출력예시 : 1. 홍길동, 2.장길산, 3.신사임당, 4. 깅예빈  
+                     // 어제 cars웅앵이랑, connectDB 참조하면서 sql 가져오는 코드 작성하기
+                     // 이름옆에 숫자는 예빈쓰가 number 변수 선언해야함. number 옆에 . 도 출력되게 설정 
+                     // while문 사용해서 모든 설문자 출력하게 하기! 
+                     
+                     // query = "SELECT~~~예삔커벨이 짤 쿼리 " + //
 
                     int memNum=1; //설문자 번호
                     boolean validInput = false; //유효한 입력 여부 변수  
