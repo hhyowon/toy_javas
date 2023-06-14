@@ -37,65 +37,68 @@ public class PollsWithDB {
                  /* 'O'입력시 차 이름명단 나오는 옵션 */
                  if(workkey.equals("P")){ 
                     System.out.println("- 설문자 가능 명단(가입 완료)");
-                     // 예삔커벨이 할일 설문자 가능 명단 sql에서 가져오기
-                     // 출력예시 : 1. 홍길동, 2.장길산, 3.신사임당, 4. 깅예빈  
-                     // 어제 cars웅앵이랑, connectDB 참조하면서 sql 가져오는 코드 작성하기
-                     // 이름옆에 숫자는 예빈쓰가 number 변수 선언해야함. number 옆에 . 도 출력되게 설정 
-                     // while문 사용해서 모든 설문자 출력하게 하기! 
-                     
-                     // query = "SELECT~~~예삔커벨이 짤 쿼리 " + //
+           
+                    query ="SELECT USER_NAME\n" + //
+                                "FROM pollswithdb.user";
+                    ResultSet resultSet = statement.executeQuery(query); //statemane 객체를 사용해서 select문 실행하고 결과 resultset에 저장함 
+                    int number = 1; //번호를 나타내는 변수 
+                    HashMap< String, String> userNameMap = new HashMap<>();
 
-                    int memNum=1; //설문자 번호
+                    while (resultSet.next()) { //resultSet 값 있을 때까지 반복 루프 
+                        System.out.println(number + "." +
+                            resultSet.getString("USER_NAME"));                                
+                            number = number + 1;
+                    }            System.out.println();
+
+
+
                     boolean validInput = false; //유효한 입력 여부 변수  
 
                     while (!validInput) { // 똑바로 입력 할때까지 반복 
                     System.out.print("설문자 번호 입력 : ");
-                    memNum = scanner.nextInt(); //해당 설문자 번호 입력
-                        if(memNum > 4) //최대 4명이니깐 4 이상 숫자 입력시 Error 메시지 출력
+                    String memNum = scanner.nextLine(); //해당 설문자 번호 입력
+                        if(Integer.parseInt(memNum)  > 4) //최대 4명이니깐 4 이상 숫자 입력시 Error 메시지 출력
                         {
                             System.out.println("-Error- 확인 후 입력 필요 ");
                         }else {
                                 validInput = true; //유효하면 true 
                         }
+
                     System.out.println("-- 설문시작 -- ");
                 }
-                //         query = "SELECT T_FAC.COMPANY, T_CAR_INFOR.CAR_NAME\n" + //
-                //                 "   , T_CAR_INFOR.CAR_INFOR_ID\n" + //
-                //                 "FROM (factorys AS T_FAC\n" + //
-                //                 "   inner JOIN car_infors AS T_CAR_INFOR\n" + //
-                //                 "    ON T_FAC.COMPANY_ID = T_CAR_INFOR.COMPANY_ID)\n" ;
-                                
-                //     ResultSet resultSet = statement.executeQuery(query); //statemane 객체를 사용해서 select문 실행하고 결과 resultset에 저장함 
-                //     int number = 1; //번호를 나타내는 변수 
-                //     Statement statement2 = connection.createStatement(); //두번째 쿼리 실행위해 생성
-                //     ResultSet resultSet2; //두번째 쿼리 결과 저장위해 변수 선언 
-                //     String query2; // 두번째 쿼리 저장위한 문자열 변수 선언 
-                //     HashMap< String, String> carNumberMap = new HashMap<>(); //자동차 번호를 저장하기 위한 해시맵 생성,재활용위함
 
-                //   while (resultSet.next()) { //resultSet 값 있을 때까지 반복 루프 
-                //         System.out.print(number + "." +
-                //             resultSet.getString("COMPANY") + " - " +
-                //             resultSet.getString("CAR_NAME") + ": "); //번호, 회사명, 자동차 이름 출력 
-                        
-                //         String carInforId = resultSet.getString("CAR_INFOR_ID"); //재활용위해 변수에 치환시킴
+                Statement statement2 = connection.createStatement(); //두번째 쿼리 실행위해 생성
+                ResultSet resultSet2; //두번째 쿼리 결과 저장위해 변수 선언 
+                String query2; // 두번째 쿼리 저장위한 문자열 변수 선언 
+                String answerNumber; //답항 번호 입력받을 변수 
+                HashMap<String, String> answerNumMap = new HashMap<>(); //입력받은 답항 번호를 저장하기 위한 해시맵 생성 
 
-                //         query2 = "SELECT T_OPT_INFO.OPTION_NAME\n" + //
-                //                 "FROM option_infors AS T_OPT_INFO\n" + //
-                //                 "\tINNER JOIN `options` AS T_OPTS\n" + //
-                //                 "    ON T_OPT_INFO.OPTION_INFOR_ID = T_OPTS.OPTION_INFOR_ID\n" + //
-                //                 "    AND T_OPTS.CAR_INFOR_ID = '"+carInforId+"'";
-                //         resultSet2 = statement2.executeQuery(query2);
-                //         while(resultSet2.next()){
-                //             System.out.print(resultSet2.getString("OPTION_NAME")+",");
-                //         }
-                //         number = number + 1;
-                //         System.out.println();
-                //     }
-                // //    차량 번호 입력 
-                //     System.out.print("- 차 이름 명단 : ");
-                //     String CarNumber = scanner.nextLine(); //차번호 입력 받기 
-                //     System.out.println("차명 PK : " + carNumberMap.get(CarNumber)); //해시맵에서 입력받은 차 번호에 해당하는 차명PK가져와 출력
-                 
+                 query="SELECT QUESTION,QUESTION_ID\n" + //
+                         "From pollswithdb.question;\n"; 
+
+                resultSet = statement.executeQuery(query); //쿼리 저장 
+                    while(resultSet.next()) { 
+                     System.out.println(resultSet.getString("QUESTION")); // 문제 하나씩 출력
+
+                    query2 ="SELECT ANSWER\n" + //
+                            "FROM pollswithdb.answer;\n"; //답항 출력하는 쿼리
+                        resultSet2 = statement2.executeQuery(query2);
+                        while(resultSet2.next()){
+                            System.out.print(resultSet2.getString("ANSWER")+"  ");
+                            
+                        }
+                            System.out.println();
+                            System.out.print("답) ");
+                            answerNumber = scanner.nextLine(); // 답항번호 입력 
+                            System.out.println();
+
+                    }
+                    System.out.println();
+                
+                    //String answerPK = answerNumMap.get(answerNumber);
+
+                // 답고른 정보 저장 HashMap<String, String> carOptionInfor = new HashMap<>(); //옵션정보를 저장하기 위한 해시맵 생성
+
                 //     System.out.println("- 선택 가능 옵션들");
                 //     query = "SELECT OPTION_INFOR_ID, OPTION_NAME\r\n" + //
                 //             "FROM option_infors ";
