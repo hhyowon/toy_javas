@@ -5,10 +5,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Scanner;
+import commons.Commons;
 
-//import com.mysql.cj.sasl.ScramSha1SaslClient;
-
-//import cars.Car;
 
 
 public class PollsWithDB {
@@ -127,9 +125,18 @@ public class PollsWithDB {
                     /* S입력시 : 통계시작*/
                  } else if (workkey.equals("S")) {
                         System.out.println(" - 통계 시작 -");
-                        System.out.println(" -- 총 설문자  ");
-                        query="";           
-
+                    
+                        // 총 설문자 출력
+                        System.out.println(" -- 총 설문자  "); 
+                        query="SELECT COUNT(DISTINCT USER_NAME_ID) AS TotalCount\r\n" + //
+                                "FROM statistics;";        
+                         ResultSet resultSet = statement.executeQuery(query);
+                                            while (resultSet.next()) {
+                                                System.out.print("-->  "+resultSet.getString("TotalCount")+"명\n");
+                                            }
+                                               System.out.println();  
+    
+                        // 문항 내 최대 갯수 번호 출력 
                         System.out.println(" -- 문항 내에서 최대 갯수 번호");
                         query = "\r\n" + //
                                 "SELECT t1.Question, t1.Answer\r\n" + //
@@ -150,37 +157,32 @@ public class PollsWithDB {
                                 "        GROUP BY QUE.QUESTION, ANS.ANSWER\r\n" + //
                                 "    ) AS t2\r\n" + //
                                 ")";
-                                try {
-                                    ResultSet resultSet = statement.executeQuery(query);
+                             
+                                 resultSet = statement.executeQuery(query);
                                             while (resultSet.next()) {
                                                 System.out.println(resultSet.getString("Question") + "-->  " + resultSet.getString("Answer"));
                                             }
                                                System.out.println();
-                                } catch (Exception e) {
-                                    System.out.println("Error occurred while executing the query: " + e.getMessage());
-                                    // TODO: handle exception
-                                }
+                             
                       
-
+                        //답항 중심 
                         System.out.println(" -- 답항 중심 ");
                         query = "SELECT ANS.ANSWER,STT.ANSWER_ID, COUNT(*) AS CNT\n" + //
                                 "FROM pollswithdb.statistics as STT\n" + //
                                 "INNER JOIN answer as ANS on STT.ANSWER_ID = ANS.ANSWER_ID\n" + //
                                 "GROUP BY ANS.ANSWER_ID";
                        
-                            try {
-                                 ResultSet resultSet = statement.executeQuery(query);
+                            
+                                  resultSet = statement.executeQuery(query);
 
                                 while (resultSet.next()) {
                                     System.out.println(resultSet.getString("ANSWER") + "-->  " + resultSet.getString("CNT"));
                                 }
                                    System.out.println();
-                            } catch (SQLException e) {
-                                System.out.println("Error occurred while executing the query: " + e.getMessage());
-                            }
+                            
                         
                     }else{
-                        System.out.println(" ----- 작업 키 확인 ----"+workkey);
+                        System.out.println(" ----- 작업 키 확인 ----"+workkey); //작업키 안되면 작동
                  }
 
             }
@@ -189,6 +191,7 @@ public class PollsWithDB {
 
         } catch (Exception e) {
             // TODO: handle exception
+            System.out.println("Error occurred while executing the query: " + e.getMessage());
             System.out.println();
         }
          System.out.println();
