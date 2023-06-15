@@ -96,13 +96,13 @@ public class PollsWithDB {
 
                             answerNumber = scanner.nextLine(); // 답항번호 입력   
                             answerNumMap.put(resultSet.getString("QUESTION_ID"), answerNumber);     
-                            //answerNumMap.put(answerNumber,resultSet.getString("ANSWER_ID")); //< --- 여기 잘 모르겠음 마음대로 넣음 일단...  여기넣으면안됨
+                
 
-                            System.out.println(answerNumMap);
+                           // System.out.println(answerNumMap);
 
                     }
-                    System.out.println(userNameMap);
-                    System.out.println(userNameMap.get(memNum));
+                    // System.out.println(userNameMap);
+                    // System.out.println(userNameMap.get(memNum));
 
                 
                     query ="DELETE FROM `statistics`\n" + 
@@ -111,16 +111,19 @@ public class PollsWithDB {
                     int count = statement.executeUpdate(query); //삭제쿼리 실행하고 영향받는 수 저장
                     System.out.println(count);
 
-                    //insert 옵션
-                    System.out.println(answerNumMap.keySet());
-                    String questionId = "";
-                    query = "INSERT INTO `statistics`\n" + //
-                            "(QUESTION_ID, ANSWER_ID, USER_NAME_ID)\n" + //
-                            "value\n" + //
-                            "('"+answerNumMap.get("QUESTION_ID")+"', '"+answerNumMap.get("QUESTION_ID")+"', '"+userNameMap.get(memNum)+"')\n" + //
-                            ";\n" + //
-                            "";
-                    count = statement.executeUpdate(query);
+                    //insert 옵션 --> 구현 다 못함 
+                    // Commons commons = new Commons(); // Commons 클래스의 인스턴스 생성
+                    // String QueId = commons.generateUUID(); // 랜덤유니크아이디 값 생성에 QueId에 선언해줌 
+
+                    // System.out.println(answerNumMap.keySet());
+                    // String questionId = "";
+                    // query = "INSERT INTO `statistics`\n" + //
+                    //         "(QUESTION_ID, ANSWER_ID, USER_NAME_ID)\n" + //
+                    //         "value\n" + //
+                    //         "('"+answerNumMap.get("QUESTION_ID")+"', '"+answerNumMap.get("QUESTION_ID")+"', '"+userNameMap.get(memNum)+"')\n" + //
+                    //         ";\n" + //
+                    //         "";
+                    // count = statement.executeUpdate(query);
 
                     /* S입력시 : 통계시작*/
                  } else if (workkey.equals("S")) {
