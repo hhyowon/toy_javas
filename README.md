@@ -1,18 +1,43 @@
-## Getting Started
+# fOUR 커벨 TEAM PROJECT(POLLSWITHDB)
+## TOPIC
+- 종료 전까지 계속 설문 진행
+- 설문지는 하나, 설문자는 최소 4명
+- 재설문 시 기존 설문 내용 삭제됨.
+- 프로젝트 진행 기간: 2023.6.13. ~ 2023.6.15
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
 
-## Folder Structure
+## MEMBER & PART
 
-The workspace contains two folders by default, where:
+- 조! 효! 원! : JAVA 전체 검수 및 컨펌 AKA 멱잡캐  
+[코드](./src/PollsWithDB.java)
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+- 한 희 수 : ERD & DML 구성  
+[DML](./PollsWithDB.sql)
+[DML](./DML.sql)
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
+- 김 예 빈 : JAVA 설문자 가능 명단 완성
 
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
+- 김 명 곤 : 쿼리문 작성 
+ 
+## 작업시 에로 사항
 
-## Dependency Management
+- 해시맵 insert 부분을 구현하지 못한이유
 
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+ 유니크아이디를 꼭 써야된다는 생각에 이 값을 받아오긴 했는데 어디 값으로 넣어야 하는지 몰랐습니다
+ insert 할때 각각 VALUES 를 넣을때 해시맵에 저장한 값을 가져오고 싶었는데 해시맵에 대한 이해도가 부족해서 가져오지 못했습니다.
+
+
+## THE END...
+
+- 프로젝트 소감 
+
+ 메소드를 구현하지 않은 이유 일단 팀원 전체가 메소드가 약해서 전체 코드를 짜고 잘 돌아가게 되면 메소드를 도전하려고 했으나 
+완성하지 못해서 결국 메소드까지 가지 못했습니다.
+ 시간이 더 있었다면 설문자 메소드라도 구현할 걸 아쉬운 마음이 듭니다.
+
+
+
+
+
+
+
