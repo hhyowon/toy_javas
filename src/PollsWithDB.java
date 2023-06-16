@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Scanner;
+
 import commons.Commons;
 
 
@@ -40,7 +41,7 @@ public class PollsWithDB {
                  if(workkey.equals("P")){ 
                     System.out.println("- 설문자 가능 명단(가입 완료)");
            
-                    query ="SELECT USER_NAME,USER_NAME_ID\n" + //
+                    query ="SELECT USER_NAME,USER_NAME_ID\n" + // 사용자 출력 쿼리 
                                 "FROM pollswithdb.user";
                     ResultSet resultSet = statement.executeQuery(query); //statemane 객체를 사용해서 select문 실행하고 결과 resultset에 저장함 
                     int number = 1; //번호를 나타내는 변수 
@@ -71,13 +72,13 @@ public class PollsWithDB {
                 }
 
                 Statement statement2 = connection.createStatement(); //두번째 쿼리 실행위해 생성
-                ResultSet resultSet2; //두번째 쿼리 결과 저장위해 변수 선언 \
+                ResultSet resultSet2; //두번째 쿼리 결과 저장위해 변수 선언 
 
                 String query2; // 두번째 쿼리 저장위한 문자열 변수 선언 
                 String answerNumber; //답항 번호 입력받을 변수 
                 HashMap<String, String> answerNumMap = new HashMap<>(); //입력받은 답항 번호를 저장하기 위한 해시맵 생성 
 
-                 query="SELECT QUESTION,QUESTION_ID\n" + //
+                 query="SELECT * \n" + //
                          "From pollswithdb.question;\n"; 
 
                 resultSet = statement.executeQuery(query); //쿼리 저장 
@@ -112,18 +113,18 @@ public class PollsWithDB {
                     System.out.println(count);
 
                     //insert 옵션 --> 구현 다 못함 
-                    // Commons commons = new Commons(); // Commons 클래스의 인스턴스 생성
-                    // String QueId = commons.generateUUID(); // 랜덤유니크아이디 값 생성에 QueId에 선언해줌 
+                     Commons commons = new Commons(); // Commons 클래스의 인스턴스 생성
+                     String QueId = commons.generateUUID(); // 랜덤유니크아이디 값 생성에 QueId에 선언해줌 
 
-                    // System.out.println(answerNumMap.keySet());
-                    // String questionId = "";
-                    // query = "INSERT INTO `statistics`\n" + //
-                    //         "(QUESTION_ID, ANSWER_ID, USER_NAME_ID)\n" + //
-                    //         "value\n" + //
-                    //         "('"+answerNumMap.get("QUESTION_ID")+"', '"+answerNumMap.get("QUESTION_ID")+"', '"+userNameMap.get(memNum)+"')\n" + //
-                    //         ";\n" + //
-                    //         "";
-                    // count = statement.executeUpdate(query);
+                     System.out.println(answerNumMap.keySet());
+                     String questionId = "";
+                     query = "INSERT INTO `statistics`\n" + //
+                             "(STATISTICS_ID,QUESTION_ID, ANSWER_ID, USER_NAME_ID)\n" + //
+                             "value\n" +//
+                            "('"+commons.generateUUID()+"','"+answerNumMap.get("QUESTION_ID")+"', '"+answerNumMap.get("QUESTION_ID")+"', '"+userNameMap.get(memNum)+"')\n" + //
+                            ";\n" + //
+                             "";
+                     count = statement.executeUpdate(query);
 
                     /* S입력시 : 통계시작*/
                  } else if (workkey.equals("S")) {
