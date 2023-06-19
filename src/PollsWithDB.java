@@ -94,8 +94,8 @@ public class PollsWithDB {
                         while (resultSet2.next()) {
                             System.out.print(resultSet2.getString("ANSWER") + "  ");
                             answerNumMap.put(String.valueOf(number_second), resultSet2.getString("ANSWER_ID"));
-                            number_second = number_second + 1; // --> 여기 학원에서 돌려봐야함 몇번째 키값에 넣야할지 때문에 number_second 만들긴함
-                                                               // answer_id 넣음
+                            number_second = number_second + 1; 
+                                                               
                         }
                         resultSet2.close();
                         System.out.println();
