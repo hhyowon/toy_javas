@@ -1,3 +1,6 @@
+# toy_javas
+📝 SQL과 JAVA를 이용해서 설문조사 만들기!
+
 # fOUR 커벨 TEAM PROJECT(POLLSWITHDB)
 ## TOPIC
 - 종료 전까지 계속 설문 진행
